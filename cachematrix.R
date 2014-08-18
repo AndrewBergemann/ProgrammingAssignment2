@@ -1,38 +1,36 @@
-## These two functions combined save computational time by preventing the repeated calculation of inverse matrices. Before calculating a fresh inversion, the functions check whether previous inversions of the matrix have been stored, and if so retrieve them from storage.
-
-
-## This function, makeCacheMatrix, caches matrices and there inverse partners.
-
-makeCacheMatrix <- function(a) 
-{
-b<-matrix(a,sqrt(length(a)),sqrt(length(a)))
-	    m<-NULL
+## This program contains code to create a matrix stored in an a separate environment 
+which can hold the inverse of the matrix x.
+makeCacheMatrix <- function(x) {
+		abe<-nrow(x)
+		m<-matrix(nrow=abe,ncol=abe)
         set <- function(y) {
-                b <<- y
-                m<<-NULL
+                x <<- y
+                m<-matrix(nrow=abe,ncol=abe)
         }
-        b<-matrix(a,sqrt(length(a)),sqrt(length(a)))
-        get <- function() b
-        setmatrix <- function (solve) m <<- setmatrix
-        getmatrix <- function() m
+        get <- function() x
+        setsolve <- function(solve) m <<- solve
+        getsolve <- function() m
         list(set = set, get = get,
-             setmatrix = setmatrix,
-             getmatrix = getmatrix)
-             
-}
+             setsolve = setsolve,
+             getsolve = getsolve)
+             }
 
 
-## This function checks for previous inversions of a matrix. If it does not find any it creates a new inversion and stores it.
+## This program tests for the presence of in a separate environment of the inverse
+of a matrix x. When the inverse has been previously calculated, the inverse matrix
+is retrieved from the separate environment. When it has not been previously determined,
+the program instructs the solution of the inverse using the function solve.
 
-cacheSolve <- function(a, ...) 
-{
-        m <- a$getmatrix()
-        if(!is.null(m)) {
+cacheSolve <- function(x, ...) {
+        m <- x$getsolve()
+        are<-m[1,1]
+        if(!is.na(are)) {
                 message("getting cached data")
                 return(m)
         }
-        data <- a$get()
-        m <- solve (data, ...)
-        a$setmatrix(m)
-        m
+        else{
+        data <- x$get()
+        m <- solve(data, ...)
+        x$setsolve(m)
+        m}
 }
